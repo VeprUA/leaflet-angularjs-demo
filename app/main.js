@@ -64,6 +64,7 @@ var marker1000Group = L.layerGroup([]);
 var marker500Group = L.layerGroup([]);
 var marker30Group = L.layerGroup([]);
 var marker5Group = L.layerGroup([]);
+var shapesGroup = L.layerGroup([]);
 
 var baseMaps = { 
     "Floor Plan 1": floorPlan,
@@ -76,7 +77,8 @@ var overlayMaps = {
     "Group 500": marker500Group,
     "Group 1,000": marker1000Group,
     "Group 3,000": marker3000Group,
-    "Group 50,000": marker50000Group
+    "Group 50,000": marker50000Group,
+    "Shapes": shapesGroup
 };
 
 
@@ -94,10 +96,6 @@ function getRandomNumer(max) {
     return Math.floor(Math.random() * Math.floor(max));
 }
 
-function getRandomPercentage() {
-    return Math.floor(Math.random() * 100) / 100;
-}
-
 function convertPercentToLatLng(percentX, percentY) {
     var x = SIZE.FLOOR1.STANDARD.WIDTH * percentX;
     var y = SIZE.FLOOR1.STANDARD.HEIGHT * percentY;
@@ -111,6 +109,7 @@ function populateGroup(group, marker_count, width, height) {
     }
 }
 
+
 populateGroup(marker5Group, 5);
 populateGroup(marker30Group, 30);
 populateGroup(marker500Group, 500);
@@ -118,7 +117,7 @@ populateGroup(marker1000Group, 1000);
 populateGroup(marker3000Group, 3000);
 populateGroup(marker50000Group, 50000);
 
-marker5Group.addTo(map);
+//marker5Group.addTo(map);
 
 map.on('zoom', function(e) {
     console.log(e);
