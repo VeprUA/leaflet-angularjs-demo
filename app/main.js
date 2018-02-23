@@ -44,25 +44,40 @@ var map = L.map('map',{
     crs: L.CRS.Simple,
     layers: [floorPlan],
     minZoom: -5,
-    maxZoom: 15
+    maxZoom: 2
 });
 
 map.fitBounds(SIZE.FLOOR1.STANDARD.BOUNDS);
+
 /* Layer groups */
-var markersTotal  = 3000;
-var markerClusterGroup =  L.markerClusterGroup({
+var marker50000Group =  L.markerClusterGroup({
     maxClusterRadius: 120,
-    disableClusteringAtZoom: 15
+    //disableClusteringAtZoom: 15
 });
 
-// var markerClusterGroup = L.layerGroup([]);
+var marker3000Group =  L.markerClusterGroup({
+    maxClusterRadius: 120,
+    //disableClusteringAtZoom: 15
+});
+
+var marker1000Group = L.layerGroup([]);
+var marker500Group = L.layerGroup([]);
+var marker30Group = L.layerGroup([]);
+var marker5Group = L.layerGroup([]);
 
 var baseMaps = { 
     "Floor Plan 1": floorPlan,
     "Floor Plan 1 - 90" : floorPlan_rotated,
     "Floor Plan 2" : floorPlan_heavy
 };
-var overlayMaps = { "Group 3000": markerClusterGroup };
+var overlayMaps = { 
+    "Group 5": marker5Group,
+    "Group 30": marker30Group,
+    "Group 500": marker500Group,
+    "Group 1,000": marker1000Group,
+    "Group 3,000": marker3000Group,
+    "Group 50,000": marker50000Group
+};
 
 
 L.control.layers(baseMaps, overlayMaps).addTo(map);
@@ -73,9 +88,6 @@ function createRandomMarker() {
     var lng = getRandomNumer(SIZE.FLOOR1.STANDARD.WIDTH);
     
     return L.marker([lat, lng]);
-    // var latLng = convertPercentToLatLng(getRandomPercentage(), getRandomPercentage());
-    // console.log(latLng);
-    // return L.marker(latLng);
 }
 
 function getRandomNumer(max) {
@@ -89,23 +101,32 @@ function getRandomPercentage() {
 function convertPercentToLatLng(percentX, percentY) {
     var x = SIZE.FLOOR1.STANDARD.WIDTH * percentX;
     var y = SIZE.FLOOR1.STANDARD.HEIGHT * percentY;
-    console.log('x,y', x, y, percentX, percentY);
+
     return map.layerPointToLatLng(x, y);
 }
-// L.marker(map.layerPointToLatLng(L.point(500,200))).addTo(map);
 
-for(var i = 0; i < markersTotal; i++){
-    markerClusterGroup.addLayer(createRandomMarker());
+function populateGroup(group, marker_count, width, height) {
+    for(var i = 0; i < marker_count; i++){
+        group.addLayer(createRandomMarker());
+    }
 }
-// for(var i = 0; i < markersTotal/2; i++){
-//     markerClusterGroup2.addLayer(createRandomMarker());
-// }
 
-/* Rectangle */
-var rect1 = L.polygon([[12,0], [12, 40], [30, 20]]);
-rect1.addTo(map);
-markerClusterGroup.addTo(map);
+populateGroup(marker5Group, 5);
+populateGroup(marker30Group, 30);
+populateGroup(marker500Group, 500);
+populateGroup(marker1000Group, 1000);
+populateGroup(marker3000Group, 3000);
+populateGroup(marker50000Group, 50000);
+
+marker5Group.addTo(map);
 
 map.on('zoom', function(e) {
     console.log(e);
+});
+
+map.on('baselayerchange', function(e) {
+    console.log('event', e);
+    console.log('Bounds of selected layer', e.layer.getBounds());
+    console.log(map.getSize(), "size");
+    console.log(map.getBounds(), "bounds");
 });
